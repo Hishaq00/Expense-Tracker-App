@@ -1,0 +1,5 @@
+{
+  "name": "Expense Tracker ",
+  "description": "A production-ready expense tracker with real-time Firebase sync, authentication, and spending analytics.",
+  "requestFramePermissions": []
+}

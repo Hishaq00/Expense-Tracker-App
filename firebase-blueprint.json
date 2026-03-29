@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "parent", "child"] },
+        "parentId": { "type": "string" },
+        "isFrozen": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Parent's budget tracking",
+      "type": "object",
+      "properties": {
+        "parentId": { "type": "string" },
+        "totalBudget": { "type": "number" },
+        "remainingBalance": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["parentId", "totalBudget", "remainingBalance"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A single expense entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "amount": { "type": "number" },
+        "category": { "type": "string" },
+        "date": { "type": "string" },
+        "childId": { "type": "string" },
+        "parentId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "amount", "category", "date", "childId", "parentId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile data"
+    },
+    "/budgets/{parentId}": {
+      "schema": "Budget",
+      "description": "Parent budget data"
+    },
+    "/expenses/{expenseId}": {
+      "schema": "Expense",
+      "description": "Global expenses collection"
+    }
+  }
+}

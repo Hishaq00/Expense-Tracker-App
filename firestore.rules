@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().role == 'admin') || 
+        request.auth.token.email == "haleema.aptech@gmail.com"
+      );
+    }
+
+    function isParent() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().role == 'parent';
+    }
+
+    function isChild() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().role == 'child';
+    }
+
+    function isFrozen() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().get('isFrozen', false) == true;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ===============================================================
+    // User Profiles
+    // ===============================================================
+    match /users/{userId} {
+      allow read: if isAdmin() || isOwner(userId) || (isParent() && exists(/databases/$(database)/documents/users/$(userId)) && get(/databases/$(database)/documents/users/$(userId)).data.parentId == request.auth.uid);
+      allow create: if isAuthenticated(); // Allow initial signup
+      allow update: if isAdmin() || (isOwner(userId) && !isFrozen());
+    }
+
+    // ===============================================================
+    // Budgets
+    // ===============================================================
+    match /budgets/{parentId} {
+      allow read: if isAdmin() || isOwner(parentId) || (isChild() && getUserData().parentId == parentId);
+      allow write: if (isAdmin() || isOwner(parentId) || (isChild() && getUserData().parentId == parentId)) && !isFrozen();
+    }
+
+    // ===============================================================
+    // Expenses
+    // ===============================================================
+    match /expenses/{expenseId} {
+      allow read: if isAdmin() || 
+                    (isParent() && resource.data.parentId == request.auth.uid) || 
+                    (isChild() && resource.data.childId == request.auth.uid);
+      
+      allow create: if (isAdmin() || 
+                      (isParent() && request.resource.data.parentId == request.auth.uid) || 
+                      (isChild() && request.resource.data.childId == request.auth.uid)) && !isFrozen();
+
+      allow update, delete: if (isAdmin() || 
+                              (isParent() && resource.data.parentId == request.auth.uid) ||
+                              (isChild() && resource.data.childId == request.auth.uid)) && !isFrozen();
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
