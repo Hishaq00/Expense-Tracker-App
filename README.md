@@ -1,6 +1,6 @@
 # 💸 ExpenseTracker
 
-A modern, feature-rich **family expense tracking** web application built with React, Firebase, and TailwindCSS. Track your spending, manage family members, and get AI-powered insights — all in one place.
+A modern, feature-rich **family expense tracking** web application built with React, Firebase, and TailwindCSS. Track your spending, manage family member — all in one place.
 
 ---
 
@@ -13,7 +13,6 @@ A modern, feature-rich **family expense tracking** web application built with Re
 - 💳 **Expense Management** — Add, edit, and delete expenses with categories
 - 👨‍👩‍👧 **Family Management** — Parents can add child accounts and monitor their spending
 - 🛡️ **Admin Panel** — Manage all users, freeze/unfreeze accounts
-- 💡 **AI Insights** — Gemini AI-powered expense analysis and suggestions
 - 🎬 **Splash Screen & Onboarding** — Smooth first-run experience with animated onboarding
 - 📱 **Responsive Design** — Works seamlessly on desktop and mobile
 - ⚡ **Animations** — Fluid UI transitions using Framer Motion
@@ -32,7 +31,6 @@ A modern, feature-rich **family expense tracking** web application built with Re
 | Auth | Firebase Authentication |
 | Charts | Recharts |
 | Icons | Lucide React |
-| AI | Google Gemini API (`@google/genai`) |
 | Date Utils | date-fns |
 
 ---
@@ -63,7 +61,6 @@ A modern, feature-rich **family expense tracking** web application built with Re
    Update `firebase-applet-config.json` with your Firebase project credentials:
    ```json
    {
-     "apiKey": "YOUR_API_KEY",
      "authDomain": "YOUR_PROJECT.firebaseapp.com",
      "projectId": "YOUR_PROJECT_ID",
      "storageBucket": "YOUR_PROJECT.appspot.com",
